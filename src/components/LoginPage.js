@@ -1,18 +1,22 @@
 
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
 import axios from "axios";
+
 
 import Input from "./Input";
 import Button from "./Button";
 import LogoOne from "./LogoOne";
+import AppContext from "../contexts/Context";
 
 export default function LoginPage(props) {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const {setImgProfile} = useContext(AppContext);
 
+    const navigate = useNavigate();
     // Pegar axios
     function login(){
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login"
@@ -22,10 +26,11 @@ export default function LoginPage(props) {
         });
         promise.then(response =>{
             const {data} = response;
-            console.log(data);
+            setImgProfile(data.image);
             props.salvarToken(data.token);
+            navigate("/habits")
         })
-        promise.catch(error => alert('Usuário não cadastrado!'))
+        promise.catch(err => alert("Usuário ou senha inválidos!"))
     }
 
     return (

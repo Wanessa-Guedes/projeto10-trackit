@@ -8,12 +8,14 @@ import Input from "./Input";
 import Button from "./Button";
 import LogoOne from "./LogoOne";
 
+
 export default function SignUpPage() {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [user, setUser] = useState("");
     const [avatar, setAvatar] = useState("");
+    
 
     const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ export default function SignUpPage() {
             console.log(data);
             navigate("/");
         })
-        promise.catch(alert("E-mail e/ou senha inválido(s)"))
+        promise.catch(err => console.log(err.response))
     }
 
     return (
