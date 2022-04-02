@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AppContext from "../contexts/Context";
 import 'react-circular-progressbar/dist/styles.css';
 import Input from "./Input";
+import ListHabits from "./ListHabits";
 
 export default function Habits(props) {
 
@@ -25,14 +26,24 @@ export default function Habits(props) {
     const [arrayWeekday, setArrayWeekday] = useState([]);
     const [showAddHabit, setShowAddHabit] = useState(false);
     const [habitsList, setHabitsList] = useState(false);
-    const [habitAdd, setHabitAdd] = useState(null);
+    const [habitsAdd, setHabitsAdd] = useState(null);
+    const [habitLoad, setHabitLoad] = useState(false);
 
     const percentage = 66;
 
+    let token = props.token;
+
     //const navigate = useNavigate();
 
-    // Isso tá errado !!!
+
     useEffect(() => {
+        loadHabit();
+    }, [props.token]);
+
+    function loadHabit() {
+
+        setHabitLoad(true);
+        
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
@@ -42,39 +53,47 @@ export default function Habits(props) {
         const promise = axios.get(URL, config);
         promise.then(response => {
             const { data } = response;
-            console.log(data);
-            setHabitAdd(data);
-            setHabitsList(true);
-            
+            setHabitsAdd(data);
         });
-        promise.catch(err => console.log(err.response));
-    }, []);
+        promise.catch(err => alert('Erro ao carregar os hábitos'));
+        promise.finally(() => setHabitLoad(false));
+    }
+
 
     // Pegar axios
-    function criarHabito(){
+    function criarHabito() {
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
             }
         }
-        if(habit.length > 0) {
-        const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
-        const promise = axios.post(URL, {
-            name: habit,
-            days: arrayWeekday
-        }, config);
-        promise.then(response => {
-            const { data } = response;
-            console.log(data);
-        })
-        promise.catch(err => console.log(err.response));
-    }
-}
+        if (habit.length > 0) {
+            const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
+            const promise = axios.post(URL, {
+                name: habit,
+                days: arrayWeekday
+            }, config);
+            promise.then(response => {
+                const { data } = response;
+                loadHabit();
+                setHabit("");
+                addHabit();
+                //console.log(data);
+            })
+            promise.catch(err => console.log(err.response));
+        }
 
-    function addHabit(){
-        setShowAddHabit(true);
+
     }
-    
+
+    function addHabit() {
+        setShowAddHabit(!showAddHabit);
+    }
+
+    function listHabit() {
+        setHabitsList(true)
+    }
+
     function checkID(id) {
         if (arrayWeekday.includes(id)) {
             let newArray = arrayWeekday.filter((item) => item !== id);
@@ -84,34 +103,69 @@ export default function Habits(props) {
         }
     }
 
-    console.log(habitAdd);
+    function deleteHabit(id) {
+
+        if (window.confirm('Deseja realmente excluir esse hábito?')) {
+
+            const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
+            
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${props.token}`
+                }
+            }
+            const promise = axios.delete(URL, config);
+            promise.then(loadHabit);
+            promise.catch(err => alert('Erro ao deletar o hábito'));
+        }
+    }
+
+    function structureHabits() {
+
+        return (
+            <>
+                <button onClick={() => addHabit()}>+</button>
+                {
+                    showAddHabit && (
+                        <div>
+                            <Input type="text" placeholder="Nome do Hábito" value={habit}
+                                onChange={(e) => setHabit(e.target.value)} />
+                            <div>{weekdays.map((weekday, index) => <div key={index} onClick={() => checkID(weekday.id)}  >{weekday.name[0].toUpperCase()}</div>)}</div>
+                            <p onClick={() => addHabit()}>Cancelar</p>
+                            <p onClick={() => {
+                                criarHabito()
+                                listHabit()
+                            }}>Salvar</p>
+                        </div>
+                    )
+                }
+                {
+                    (habitsAdd === null && habitLoad === false) ? (
+                        <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                    ) : (habitsAdd !== null && habitLoad === false) ? (
+                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit}/>
+                    ) : (<p>Carregando hábitos...</p>)
+                }
+            </>
+        )
+    }
+
+        
+
+    const habitsStrucuture = structureHabits();
+
     return (
         <>
             <Header>
                 <h1>TrackIt</h1>
                 <img src={avatar} alt="" />
             </Header>
-        {
-            showAddHabit ? (
-            <Main>
-                
-            <div>
-                    <Input type="text" placeholder="Nome do Hábito" value={habit}
-                        onChange={(e) => setHabit(e.target.value)} />
-                    <div>{weekdays.map((weekday, index) => <div key={index} onClick={() => checkID(weekday.id)}  >{weekday.name[0].toUpperCase()}</div>)}</div>
-                    <p>Cancelar</p>
-                    <p onClick={criarHabito}>Salvar</p>
-            </div>
-                <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-                <button onClick={() => addHabit()}>+</button>
-            </Main>
-            ) : (
+
+            {
                 <Main>
-                    <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-                    <button onClick={() => addHabit()}>+</button>
+                    {habitsStrucuture}
                 </Main>
-            )
-}
+            }
             <Footer>
                 <StyledLink to="/habits">Hábitos</StyledLink>
                 <Link to="/today">

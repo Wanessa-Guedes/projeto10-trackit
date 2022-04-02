@@ -28,7 +28,7 @@ export default function LoginPage(props) {
             const {data} = response;
             setImgProfile(data.image);
             props.salvarToken(data.token);
-            navigate("/habits")
+            navigate("/today")
         })
         promise.catch(err => alert("Usuário ou senha inválidos!"))
     }
