@@ -13,6 +13,8 @@ import ListHabits from "./ListHabits";
 export default function Habits(props) {
 
     const { avatar } = useContext(AppContext);
+    const { status } = useContext(AppContext);
+
     const [habit, setHabit] = useState("");
     const [weekdays, setWeekdays] = useState([
         { id: 0, name: "domingo" },
@@ -29,8 +31,10 @@ export default function Habits(props) {
     const [habitsAdd, setHabitsAdd] = useState(null);
     const [habitLoad, setHabitLoad] = useState(false);
 
-    const percentage = 66;
 
+    const percentage = status;
+    console.log(percentage);
+    
     let token = props.token;
 
     //const navigate = useNavigate();

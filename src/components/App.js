@@ -11,6 +11,7 @@ import History from "./History";
 function App() {
 
     const [token, setToken] = useState(null);
+    const [statusCheckFooter, setstatusCheckFooter] = useState(0);
 
     return (
         <AppProvider>
@@ -18,8 +19,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage salvarToken={(token) => setToken(token)}/>} />
                 <Route path="/sign-in" element={<SignUpPage />} />
-                <Route path="/habits" element={<Habits token={token}/>} />
-                <Route path="/today" element={<Today token={token}/>} />  
+                <Route path="/habits" element={<Habits token={token} statusFooter={statusCheckFooter}/>} />
+                <Route path="/today" element={<Today token={token} salvarStatusFooter={(statusCheckFooter) => setstatusCheckFooter(statusCheckFooter)}/>} />  
                 <Route path="/history" element={<History token={token}/>} />
             </Routes>
         </BrowserRouter>

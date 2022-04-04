@@ -3,7 +3,9 @@ import { createContext } from 'react';
 
 const AppContext = createContext({
     avatar: null,
-    setImgProfile: () => {}
+    setImgProfile: () => {},
+    status: 0,
+    setStatusFooter: () => {},
 });
 
 export default AppContext;

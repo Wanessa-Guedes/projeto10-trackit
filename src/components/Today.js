@@ -10,12 +10,14 @@ import AppContext from "../contexts/Context";
 export default function Today(props) {
 
     const { avatar } = useContext(AppContext);
+    const {setStatusFooter} = useContext(AppContext);
+
     const [todayHabits, setTodayHabits] = useState([]);
     const arrayDays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
     const [completHabits, setCompletHabits] = useState(false);
     const [habitsSelecionados, setHabitsSelecionados] = useState([]);
-    const [habitCheck, setHabitCheck] = useState("#EBEBEB");
-    const [habitSelected, setHabitSelected] = useState(false);
+    const [habitStatus, setHabitStatus] = useState(0);
+    const [selected, setSelected] = useState("");
     const [weekdays, setWeekdays] = useState([
         { id: 0, name: "domingo" },
         { id: 1, name: "segunda" },
@@ -25,8 +27,6 @@ export default function Today(props) {
         { id: 5, name: "sexta" },
         { id: 6, name: "sabado" }
     ]);
-
-    const percentage = 66;
 
     useEffect(() => { loadTodayHabits()},[props.token]);
 
@@ -41,13 +41,20 @@ export default function Today(props) {
         promise.then(response => {
             const { data } = response;
             setTodayHabits(data);
+            setHabitStatus(
+                (response.data.filter((habit) => habit.done).length /
+                    response.data.length) *
+                    100
+            );
+            setStatusFooter((response.data.filter((habit) => habit.done).length /
+                                                response.data.length) *
+                                                100);
         });
         promise.catch(err => console.log(err.response));
     };
 
-    function lisOfHabits() {
 
-        todayHabits.map((todayHabit, item) => console.log(todayHabit.done))
+    function lisOfHabits() {
 
         return (
             todayHabits.map((todayHabit, item) => 
@@ -128,7 +135,6 @@ function uncheckHabitt(id){
         promise.catch(err => console.log(err.response.statusText))
 }
 
-    
     const listaHabitos = lisOfHabits();
 
     return (
@@ -139,6 +145,17 @@ function uncheckHabitt(id){
             </Header>
             <Main>
                 <DayStyle>{arrayDays[dayjs().day() - 1]}, {dayjs().date()}/{dayjs().month() + 1}</DayStyle>
+                <>
+                {(todayHabits.length > 0 && habitStatus > 0) ? (
+                    <p className="textConclude">
+                            {habitStatus.toFixed()}% dos hábitos concluídos
+                        </p>
+                    ) : ( todayHabits.length > 0 && habitStatus  === 0) ? (
+                        <p className="textNotConclude">
+                            Nenhum hábito concluído ainda
+                        </p>
+                    ) : (<></>)}
+                </>
                 {
                     listaHabitos
                 }
@@ -146,7 +163,7 @@ function uncheckHabitt(id){
             <Footer>
                 <StyledLink to="/habits">Hábitos</StyledLink>
                 <Link to="/today">
-                    <CircularProgressbar value={percentage} text="Hoje" background
+                    <CircularProgressbar value={habitStatus} text="Hoje" background
                         backgroundPadding={6}
                         styles={buildStyles({
                             backgroundColor: "#3e98c7",
@@ -200,6 +217,23 @@ flex-direction: column;
 align-items: center;
 justify-content: space-around;
 min-height: 527px;
+
+.textNotConclude {
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 17.976px;
+line-height: 22px;
+color: #BABABA;}
+
+.textConclude{
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17.976px;
+    line-height: 22px;
+    color: #8FC549;
+}
 `;
 
 const HabitsStyle = styled.div`
@@ -231,6 +265,10 @@ p {
 div {
     display: flex;
     flex-direction: column;
+}
+
+.classSelected {
+    color: #8FC549;
 }
 `;
 
