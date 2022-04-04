@@ -15,10 +15,22 @@ export default function Today(props) {
     const [completHabits, setCompletHabits] = useState(false);
     const [habitsSelecionados, setHabitsSelecionados] = useState([]);
     const [habitCheck, setHabitCheck] = useState("#EBEBEB");
+    const [habitSelected, setHabitSelected] = useState(false);
+    const [weekdays, setWeekdays] = useState([
+        { id: 0, name: "domingo" },
+        { id: 1, name: "segunda" },
+        { id: 2, name: "terça" },
+        { id: 3, name: "quarta" },
+        { id: 4, name: "quinta" },
+        { id: 5, name: "sexta" },
+        { id: 6, name: "sabado" }
+    ]);
 
     const percentage = 66;
 
-    useEffect(() => {
+    useEffect(() => { loadTodayHabits()},[props.token]);
+
+    function loadTodayHabits(){
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
@@ -31,26 +43,39 @@ export default function Today(props) {
             setTodayHabits(data);
         });
         promise.catch(err => console.log(err.response));
-    }, []);
+    };
 
+    function lisOfHabits() {
 
-    function lisOfHabits(){
+        todayHabits.map((todayHabit, item) => console.log(todayHabit.done))
+
         return (
-        todayHabits.map((todayHabit, item) =>
-        <ContainerHabits>
-        <HabitsStyle key={item}>
-            <h1>{todayHabit.name}</h1>
-            <div>
-            <p> Sequência atual: {todayHabit.currentSequence} dias </p>
-            <p> Seu recorde: {todayHabit.highestSequence} dias</p>
-            </div>
-        </HabitsStyle>
-        <ConcludeStyle><button onClick={() => habitComplet(todayHabit.name)}><ion-icon name="checkbox"></ion-icon></button></ConcludeStyle>
-        </ContainerHabits>)
+            todayHabits.map((todayHabit, item) => 
+                <ContainerHabits>
+                    <HabitsStyle key={item}>
+                        <h1>{todayHabit.name}</h1>
+                        <div>
+                            <p> Sequência atual: {todayHabit.currentSequence} dias </p>
+                            <p> Seu recorde: {todayHabit.highestSequence} dias</p>
+                        </div>
+                    </HabitsStyle>
+                    {
+                        todayHabit.done ? (
+                            <ConcludeStyle style={{color:"#8FC549"}}><button onClick={() => {habitComplet(todayHabit.name)
+                                                                                                toggle(todayHabit.id)}}>
+                                <ion-icon name="checkbox"></ion-icon>
+                            </button>
+                            </ConcludeStyle> ) : (<ConcludeStyle style={{color:"#EBEBEB"}}><button onClick={() => {habitComplet(todayHabit.name)
+                                                                                                toggle(todayHabit.id)}}>
+                                <ion-icon name="checkbox"></ion-icon>
+                            </button>
+                            </ConcludeStyle> )
+                    }
+                </ContainerHabits>) 
         )
     }
 
-function  habitComplet(name) {
+    function habitComplet(name) {
 
         if (habitsSelecionados.includes(name)) {
             let newHabitsArray = habitsSelecionados.filter((item) => item !== name);
@@ -59,19 +84,51 @@ function  habitComplet(name) {
             setHabitsSelecionados([...habitsSelecionados, name]);
         }
 
-        const selecionado = habitsSelecionados.some(habitSelecionado => habitSelecionado === name);
-
-        if(!completHabits && !selecionado){
-            setHabitCheck("#8FC549");
-        } else {
-            setHabitCheck("#EBEBEB");
-        }
-
         setCompletHabits(!completHabits);
-
     }
-    
 
+    const toggle = (id) => {
+        todayHabits.find((todayHabit) => todayHabit.id === id).done
+            ? uncheckHabitt(id)
+            : checkHabitt(id);
+    };
+
+    function checkHabitt(id){
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${props.token}`
+            }
+        }
+        
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`
+        const promise = axios.post(URL, null, config);
+        promise.then(response =>{
+            const {data} = response;
+            loadTodayHabits();
+        })
+        promise.catch(err => console.log(err.response.statusText))
+    
+}
+
+function uncheckHabitt(id){
+
+    const config = {
+        headers: {
+            Authorization: `Bearer ${props.token}`
+        }
+    }
+
+    const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`
+        const promise = axios.post(URL, null, config);
+        promise.then(response =>{
+            const {data} = response;
+            loadTodayHabits();
+        })
+        promise.catch(err => console.log(err.response.statusText))
+}
+
+    
     const listaHabitos = lisOfHabits();
 
     return (
@@ -107,12 +164,13 @@ function  habitComplet(name) {
 
 }
 
-const ContainerHabits = styled.div `
+const ContainerHabits = styled.div`
 display: flex;
 width: 90%;
 `
 
-const ConcludeStyle = styled.div `
+const ConcludeStyle = styled.div`
+
 button {
     width: 69px;
     height: 69px;
@@ -126,7 +184,11 @@ ion-icon {
     width: 100%;
     height: 100%;
     border-radius: 5px;
-    color: #E7E7E7;
+    ${(props) => "color: "+props.style.color};
+}
+
+.done {
+
 }
 `
 
@@ -140,7 +202,7 @@ justify-content: space-around;
 min-height: 527px;
 `;
 
-const HabitsStyle = styled.div `
+const HabitsStyle = styled.div`
 display: flex;
 flex-direction: column;
 background: #FFFFFF;
@@ -172,7 +234,7 @@ div {
 }
 `;
 
-const DayStyle = styled.div `
+const DayStyle = styled.div`
 font-family: 'Lexend Deca';
 font-style: normal;
 font-weight: 400;
