@@ -72,7 +72,7 @@ export default function Today(props) {
                                                                                                 toggle(todayHabit.id)}}>
                                 <ion-icon name="checkbox"></ion-icon>
                             </button>
-                            </ConcludeStyle> ) : (<ConcludeStyle style={{color:"#EBEBEB"}}><button onClick={() => {habitComplet(todayHabit.name)
+                            </ConcludeStyle> ) : (<ConcludeStyle style={{color:"#696969"}}><button onClick={() => {habitComplet(todayHabit.name)
                                                                                                 toggle(todayHabit.id)}}>
                                 <ion-icon name="checkbox"></ion-icon>
                             </button>

@@ -9,6 +9,7 @@ import Input from "./Input";
 import Button from "./Button";
 import LogoOne from "./LogoOne";
 import AppContext from "../contexts/Context";
+import Logo from "../assets/img/logo.png";
 
 export default function LoginPage(props) {
 
@@ -35,6 +36,7 @@ export default function LoginPage(props) {
 
     return (
         <Container>
+            <img src={Logo} alt="" />
             <LogoOne/>
             <Input type="text" placeholder="E-mail" value={email} 
             onChange={(e) => setEmail(e.target.value)}/>

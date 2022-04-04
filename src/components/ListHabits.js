@@ -1,13 +1,10 @@
-import axios from "axios";
+
 import styled from "styled-components";
-import { useEffect, useContext, useState } from "react";
-/*import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Link, useNavigate } from "react-router-dom";
- */
+
 
 export default function ListHabits(props) {
 
-    const [weekdays, setWeekdays] = useState([
+    const weekdays = [
         { id: 0, name: "domingo" },
         { id: 1, name: "segunda" },
         { id: 2, name: "terça" },
@@ -15,7 +12,7 @@ export default function ListHabits(props) {
         { id: 4, name: "quinta" },
         { id: 5, name: "sexta" },
         { id: 6, name: "sabado" }
-    ]);
+    ];
 
     return (
         <>
@@ -26,7 +23,21 @@ export default function ListHabits(props) {
                             <HabitsStyle>
                                 <HabitsInfos>
                                 <p>{habitAdd.name}</p>
-                                <div>{weekdays.map((weekday, index) => <div key={index}>{weekday.name[0].toUpperCase()}</div>)}</div>
+                                {
+                                <div>{weekdays.map((weekday, index) => (
+                                            <Day key={index} style={ (props.arrayWeekday.includes(weekday.id))
+                                                ? {
+                                                    color: "#FFFFFF",
+                                                    background: "#CFCFCF",
+                                                    border: "#CFCFCF",
+                                                }
+                                                : {
+                                                    color: "#DBDBDB",
+                                                    background: "#FFFFFF",
+                                                    border: "#D4D4D4",
+                                                }
+                                            }>{weekday.name[0].toUpperCase()}</Day>))}</div>
+                                }
                                 </HabitsInfos>
                                 <ConcludeStyle><button onClick={() => props.func(habitAdd.id)}><ion-icon name="trash-outline"></ion-icon></button></ConcludeStyle>
                             </HabitsStyle>
@@ -45,9 +56,11 @@ width: 90%;
 `
 
 const ConcludeStyle = styled.div`
+justify-content: end;
+
 button {
-    width: 13px;
-    height: 15px;
+    width: 20%;
+    height: 20%;
     border-radius: 5px;
     text-decoration: none;
     text-align: center;
@@ -89,7 +102,6 @@ p {
 
 div {
     display: flex;
-    justify-content: space-between;
     width: 90%;
 }
 `;
@@ -97,6 +109,8 @@ div {
 const HabitsInfos = styled.div `
 display: flex;
 flex-direction: column;
+justify-content: space-around;
+margin-left: 10px;
 
 div {
     background: #FFFFFF;
@@ -111,4 +125,19 @@ div {
     line-height: 25px;
     color: #DBDBDB;
 }
+`;
+
+const Day = styled.div`
+height: 30px;
+width: 30px;
+${(props) => "color: " + props.style.color};
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+${(props) => "background-color: "+props.style.background};
+${(props) => "border: 1px solid "+props.style.border};
+border-radius: 5px;
+display: flex;
+justify-content: center;
+align-items: center;
 `;

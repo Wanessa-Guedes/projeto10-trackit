@@ -14,8 +14,9 @@ import ListHabits from "./ListHabits";
 export default function History(props) {
 
     const { avatar } = useContext(AppContext);
+    const { status } = useContext(AppContext);
     const [habitsHistory, setHabitsHistory] = useState(null);
-    const percentage = 66;
+    const percentage = status;
 
     useEffect(() => {
         loadHistHabit();

@@ -28,13 +28,11 @@ export default function Habits(props) {
     const [arrayWeekday, setArrayWeekday] = useState([]);
     const [showAddHabit, setShowAddHabit] = useState(false);
     const [habitsList, setHabitsList] = useState(false);
-    const [habitsAdd, setHabitsAdd] = useState(null);
+    const [habitsAdd, setHabitsAdd] = useState([]);
     const [habitLoad, setHabitLoad] = useState(false);
 
 
     const percentage = status;
-    console.log(percentage);
-    
     let token = props.token;
 
     //const navigate = useNavigate();
@@ -82,12 +80,9 @@ export default function Habits(props) {
                 loadHabit();
                 setHabit("");
                 addHabit();
-                //console.log(data);
             })
-            promise.catch(err => console.log(err.response));
+            promise.catch(err => alert('Erro: Verifique os dados inseridos!'));
         }
-
-
     }
 
     function addHabit() {
@@ -108,6 +103,8 @@ export default function Habits(props) {
     }
 
     function deleteHabit(id) {
+
+        setHabitsAdd([]);
 
         if (window.confirm('Deseja realmente excluir esse hábito?')) {
 
@@ -149,11 +146,11 @@ export default function Habits(props) {
                     )
                 }
                 {
-                    (habitsAdd === null && habitLoad === false) ? (
-                        <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-                    ) : (habitsAdd !== null && habitLoad === false) ? (
-                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit} />
-                    ) : (<p>Carregando hábitos...</p>)
+                    (habitsAdd.length === 0 && habitLoad === false) ? (
+                        <NoHabittsYeat> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</NoHabittsYeat>
+                    ) : (habitsAdd.length > 0 && habitLoad === false) ? (
+                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit} arrayWeekday={arrayWeekday}/>
+                    ) : (<NoHabittsYeat>Carregando hábitos...</NoHabittsYeat>)
                 }
             </>
         )
@@ -340,3 +337,11 @@ text-decoration-line: none;
 color: #52B6FF;
 `;
 
+const NoHabittsYeat = styled.div`
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 17.976px;
+line-height: 22px;
+color: #666666;
+`
