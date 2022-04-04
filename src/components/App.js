@@ -20,7 +20,7 @@ function App() {
                 <Route path="/sign-in" element={<SignUpPage />} />
                 <Route path="/habits" element={<Habits token={token}/>} />
                 <Route path="/today" element={<Today token={token}/>} />  
-                <Route path="/history" element={<History/>} />
+                <Route path="/history" element={<History token={token}/>} />
             </Routes>
         </BrowserRouter>
         </AppProvider>

@@ -38,12 +38,16 @@ export default function Today(props) {
     function lisOfHabits(){
         return (
         todayHabits.map((todayHabit, item) =>
-        <div key={item}>
-            <p>{todayHabit.name}</p>
-            <p>Sequência atual: {todayHabit.currentSequence} dias
-                Seu recorde: {todayHabit.highestSequence} dias</p>
-            <button onClick={() => habitComplet(todayHabit.name)}>Concluido</button>
-        </div>)
+        <ContainerHabits>
+        <HabitsStyle key={item}>
+            <h1>{todayHabit.name}</h1>
+            <div>
+            <p> Sequência atual: {todayHabit.currentSequence} dias </p>
+            <p> Seu recorde: {todayHabit.highestSequence} dias</p>
+            </div>
+        </HabitsStyle>
+        <ConcludeStyle><button onClick={() => habitComplet(todayHabit.name)}><ion-icon name="checkbox"></ion-icon></button></ConcludeStyle>
+        </ContainerHabits>)
         )
     }
 
@@ -78,7 +82,7 @@ function  habitComplet(name) {
                 <img src={avatar} alt="" />
             </Header>
             <Main>
-                <div>{arrayDays[dayjs().day() - 1]}, {dayjs().date()}/{dayjs().month() + 1}</div>
+                <DayStyle>{arrayDays[dayjs().day() - 1]}, {dayjs().date()}/{dayjs().month() + 1}</DayStyle>
                 {
                     listaHabitos
                 }
@@ -95,7 +99,7 @@ function  habitComplet(name) {
                             pathColor: "#fff",
                             trailColor: "transparent",
                             pathTransitionDuration: 0.5,
-                        })} />;
+                        })} />
                 </Link>
                 <StyledLink to="/history">Histórico</StyledLink>
             </Footer>
@@ -104,10 +108,78 @@ function  habitComplet(name) {
 
 }
 
-// ERRO BACKGRPUND!!!
+const ContainerHabits = styled.div `
+display: flex;
+width: 90%;
+`
+
+const ConcludeStyle = styled.div `
+button {
+    width: 69px;
+    height: 69px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+}
+
+ion-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: #E7E7E7;
+}
+`
+
 const Main = styled.div`
-background-color: grey;
+background-color: #E5E5E5;
 overflow-y: scroll;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: space-around;
+min-height: 527px;
+`;
+
+const HabitsStyle = styled.div `
+display: flex;
+flex-direction: column;
+background: #FFFFFF;
+border-radius: 5px;
+height: 94px;
+width: 90%;
+
+h1 {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19.976px;
+    line-height: 25px;
+    color: #666666;
+}
+
+p {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12.976px;
+    line-height: 16px;
+    color: #666666;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+}
+`;
+
+const DayStyle = styled.div `
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 22.976px;
+line-height: 29px;
+color: #126BA5;
 
 `;
 
@@ -138,7 +210,7 @@ h1 {
 `;
 
 const Footer = styled.div`
-    min-height: 70px;
+    max-height: 70px;
     width: 100%;
     display: flex;
     align-items: center;
