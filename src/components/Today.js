@@ -28,7 +28,6 @@ export default function Today(props) {
         const promise = axios.get(URL, config);
         promise.then(response => {
             const { data } = response;
-            console.log(data);
             setTodayHabits(data);
         });
         promise.catch(err => console.log(err.response));

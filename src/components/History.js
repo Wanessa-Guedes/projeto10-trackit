@@ -11,7 +11,7 @@ import Input from "./Input";
 import ListHabits from "./ListHabits";
 
 
-export default function History(props){
+export default function History(props) {
 
     const { avatar } = useContext(AppContext);
     const [habitsHistory, setHabitsHistory] = useState(null);
@@ -37,26 +37,30 @@ export default function History(props){
         promise.catch(err => alert('Erro ao carregar os hábitos'));
     }
 
-console.log(habitsHistory)
+    console.log(habitsHistory)
     function historyHabits() {
 
         return (
             <>
                 {
                     (habitsHistory === null) ? (
-                        <p> Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+                        <HabitsTextSoon>
+                            <p> Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+                        </HabitsTextSoon>
                     ) : (habitsHistory !== null) ? (
-                        
-                            habitsHistory.map((habitHistory, item) =>
-                                <div key={item}>
-                                    <p>{habitHistory.day}</p>
-                                    {
-                                    habitHistory.habits.map((habit, item) =>
-                                        <p key={item}>{habit.name}</p>
-                                    )
-                                    }
-                                </div>)
-                        
+                        <HabitsHistoryStyle>
+                            {
+                                habitsHistory.map((habitHistory, item) =>
+                                    <div key={item}>
+                                        <p>{habitHistory.day}</p>
+                                        {
+                                            habitHistory.habits.map((habit, item) =>
+                                                <p key={item}>{habit.name}</p>
+                                            )
+                                        }
+                                    </div>)
+                            }
+                        </HabitsHistoryStyle>
                     ) : (<p>Carregando histórico de hábitos...</p>)
                 }
             </>
@@ -65,21 +69,21 @@ console.log(habitsHistory)
 
     const habitsStrucutureHistory = historyHabits();
 
-    return(
+    return (
         <>
-        <Header>
+            <Header>
                 <h1>TrackIt</h1>
                 <img src={avatar} alt="" />
             </Header>
 
-        <h1>Histórico</h1>
-        {
-            <Main>
-                {habitsStrucutureHistory}
-            </Main>
-        }
+            <MainHeader>Histórico</MainHeader>
+            {
+                <Main>
+                    {habitsStrucutureHistory}
+                </Main>
+            }
 
-<Footer>
+            <Footer>
                 <StyledLink to="/habits">Hábitos</StyledLink>
                 <Link to="/today">
                     <CircularProgressbar value={percentage} text="Hoje" background
@@ -101,8 +105,13 @@ console.log(habitsHistory)
 
 
 const Main = styled.div`
-background-color: grey;
+background-color: #E5E5E5;
 overflow-y: scroll;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: space-around;
+min-height: 527px;
 `;
 
 const Header = styled.div`
@@ -153,5 +162,55 @@ line-height: 22px;
 text-align: center;
 text-decoration-line: none;
 color: #52B6FF;
+`;
+
+const MainHeader = styled.div`
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 22.976px;
+line-height: 29px;
+color: #126BA5;
+
+`;
+
+const HabitsTextSoon = styled.div`
+font-family: 'Lexend Deca';
+font-style: normal;
+font-weight: 400;
+font-size: 17.976px;
+line-height: 22px;
+color: #666666;
+`;
+
+const HabitsHistoryStyle = styled.div `
+display: flex;
+flex-direction: column;
+background: #FFFFFF;
+border-radius: 5px;
+width: 90%;
+
+h1 {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19.976px;
+    line-height: 25px;
+    color: #666666;
+}
+
+p {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12.976px;
+    line-height: 16px;
+    color: #666666;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+}
 `;
 

@@ -43,7 +43,7 @@ export default function Habits(props) {
     function loadHabit() {
 
         setHabitLoad(true);
-        
+
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
@@ -108,7 +108,7 @@ export default function Habits(props) {
         if (window.confirm('Deseja realmente excluir esse hábito?')) {
 
             const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
-            
+
             const config = {
                 headers: {
                     Authorization: `Bearer ${props.token}`
@@ -124,33 +124,38 @@ export default function Habits(props) {
 
         return (
             <>
-                <button onClick={() => addHabit()}>+</button>
+                <MainHeader>
+                    <h1> Meus hábitos </h1>
+                    <button onClick={() => addHabit()}>+</button>
+                </MainHeader>
                 {
                     showAddHabit && (
-                        <div>
+                        <AddHabit>
                             <Input type="text" placeholder="Nome do Hábito" value={habit}
                                 onChange={(e) => setHabit(e.target.value)} />
                             <div>{weekdays.map((weekday, index) => <div key={index} onClick={() => checkID(weekday.id)}  >{weekday.name[0].toUpperCase()}</div>)}</div>
-                            <p onClick={() => addHabit()}>Cancelar</p>
-                            <p onClick={() => {
-                                criarHabito()
-                                listHabit()
-                            }}>Salvar</p>
-                        </div>
+                            <HabitOptions>
+                                <p onClick={() => addHabit()}>Cancelar</p>
+                                <h3 onClick={() => {
+                                    criarHabito()
+                                    listHabit()
+                                }}>Salvar</h3>
+                            </HabitOptions>
+                        </AddHabit>
                     )
                 }
                 {
                     (habitsAdd === null && habitLoad === false) ? (
                         <p> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
                     ) : (habitsAdd !== null && habitLoad === false) ? (
-                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit}/>
+                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit} />
                     ) : (<p>Carregando hábitos...</p>)
                 }
             </>
         )
     }
 
-        
+
 
     const habitsStrucuture = structureHabits();
 
@@ -178,7 +183,7 @@ export default function Habits(props) {
                             pathColor: "#fff",
                             trailColor: "transparent",
                             pathTransitionDuration: 0.5,
-                        })} />;
+                        })} />
                 </Link>
                 <StyledLink to="/history">Histórico</StyledLink>
             </Footer>
@@ -187,10 +192,72 @@ export default function Habits(props) {
 
 }
 
+
+
 const Main = styled.div`
-background-color: grey;
+background-color: #E5E5E5;
 overflow-y: scroll;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: space-around;
+min-height: 527px;
 `;
+
+
+const MainHeader = styled.div`
+display: flex;
+width: 90%;
+justify-content: space-around;
+
+h1 {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22.976px;
+    line-height: 29px;
+    color: #126BA5;
+}
+
+button {
+    background: #52B6FF;
+    border-radius: 4.63636px;
+    width: 40px;
+    height: 35px;
+    ont-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 26.976px;
+    line-height: 34px;
+    text-align: center;
+    color: #FFFFFF;
+    border: none;
+}
+
+`;
+
+const AddHabit = styled.div`
+background: #FFFFFF;
+border-radius: 5px;
+width: 90%;
+
+
+div {
+    background: #FFFFFF;
+    border: 1px solid #D5D5D5;
+    box-sizing: border-box;
+    border-radius: 5px;
+
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19.976px;
+    line-height: 25px;
+    color: #DBDBDB;
+    display: flex;
+}
+`
+    ;
 
 const Header = styled.div`
 min-height: 70px;
@@ -215,6 +282,33 @@ h1 {
     font-size: 38.982px;
     line-height: 49px;
     color: #FFFFFF
+}
+`;
+
+const HabitOptions = styled.div `
+h3 {
+    background: #52B6FF;
+    border-radius: 4.63636px;
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15.976px;
+    line-height: 20px;
+    text-align: center;
+    color: #FFFFFF;
+    width: 84px;
+    height: 35px;
+}
+
+
+p {
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15.976px;
+    line-height: 20px;
+    text-align: center;
+    color: #52B6FF;
 }
 `;
 
