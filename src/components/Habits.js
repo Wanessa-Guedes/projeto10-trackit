@@ -96,7 +96,7 @@ export default function Habits(props) {
     function checkID(id) {
         if (arrayWeekday.includes(id)) {
             let newArray = arrayWeekday.filter((item) => item !== id);
-            setArrayWeekday([...newArray]);
+            setArrayWeekday(newArray);
         } else {
             setArrayWeekday([...arrayWeekday, id]);
         }

@@ -10,7 +10,7 @@ import AppContext from "../contexts/Context";
 export default function Today(props) {
 
     const { avatar } = useContext(AppContext);
-    const {setStatusFooter} = useContext(AppContext);
+    const { setStatusFooter } = useContext(AppContext);
 
     const [todayHabits, setTodayHabits] = useState([]);
     const arrayDays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
@@ -28,9 +28,9 @@ export default function Today(props) {
         { id: 6, name: "sabado" }
     ]);
 
-    useEffect(() => { loadTodayHabits()},[props.token]);
+    useEffect(() => { loadTodayHabits() }, [props.token]);
 
-    function loadTodayHabits(){
+    function loadTodayHabits() {
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
@@ -44,11 +44,12 @@ export default function Today(props) {
             setHabitStatus(
                 (response.data.filter((habit) => habit.done).length /
                     response.data.length) *
-                    100
+                100
             );
+            setHabitsSelecionados(response.data.filter((habit) => habit.done));
             setStatusFooter((response.data.filter((habit) => habit.done).length /
-                                                response.data.length) *
-                                                100);
+                response.data.length) *
+                100);
         });
         promise.catch(err => console.log(err.response));
     };
@@ -56,9 +57,11 @@ export default function Today(props) {
 
     function lisOfHabits() {
 
-        return (
-            todayHabits.map((todayHabit, item) => 
-                <ContainerHabits>
+        return todayHabits.map((todayHabit, item) => {
+            const selecionado = habitsSelecionados.some(habito => habito.name === todayHabit.name)
+            console.log(selecionado)
+            return (
+                <ContainerHabits key={item}>
                     <HabitsStyle key={item}>
                         <h1>{todayHabit.name}</h1>
                         <div>
@@ -66,32 +69,85 @@ export default function Today(props) {
                             <p> Seu recorde: {todayHabit.highestSequence} dias</p>
                         </div>
                     </HabitsStyle>
-                    {
+{/*                     {
                         todayHabit.done ? (
-                            <ConcludeStyle style={{color:"#8FC549"}}><button onClick={() => {habitComplet(todayHabit.name)
-                                                                                                toggle(todayHabit.id)}}>
+                            <ConcludeStyle style={{ color: "#8FC549" }}><button onClick={() => {
+                                habitComplet(todayHabit.id, todayHabit.name)
+                                toggle(todayHabit.id, todayHabit.name)
+                            }}>
                                 <ion-icon name="checkbox"></ion-icon>
                             </button>
-                            </ConcludeStyle> ) : (<ConcludeStyle style={{color:"#696969"}}><button onClick={() => {habitComplet(todayHabit.name)
-                                                                                                toggle(todayHabit.id)}}>
+                            </ConcludeStyle>) : (<ConcludeStyle style={{ color: "#696969" }}><button onClick={() => {
+                                habitComplet(todayHabit.id, todayHabit.name)
+                                toggle(todayHabit.id, todayHabit.name)
+                            }}>
                                 <ion-icon name="checkbox"></ion-icon>
                             </button>
-                            </ConcludeStyle> )
-                    }
-                </ContainerHabits>) 
-        )
+                            </ConcludeStyle>)
+                    } */}
+
+                    <ConcludeStyle
+                    selecionado={selecionado}
+                    onClick={() => {habitComplet(todayHabit.id, todayHabit.name)
+                                    toggle(todayHabit.id, todayHabit.name)}}
+                    >
+                        <button>
+                                <ion-icon name="checkbox"></ion-icon>
+                            </button>
+                    </ConcludeStyle>
+                    
+                </ContainerHabits>
+                )
+            })
     }
 
-    function habitComplet(name) {
+    /*     function habitComplet(name) {
+            if(habitsSelecionados.length > 0){
+            if (habitsSelecionados.includes(name)) {
+                let newHabitsArray = habitsSelecionados.filter((item) => item !== name);
+                console.log(newHabitsArray)
+                setHabitsSelecionados([...newHabitsArray]);
+                console.log(habitsSelecionados)
+            } else {
+                setHabitsSelecionados([...habitsSelecionados, name]);
+                console.log(habitsSelecionados)
+            }
+        } else {
+            setHabitsSelecionados([...habitsSelecionados, name]);
+        }
+    
+            setCompletHabits(!completHabits);
+        } */
 
-        if (habitsSelecionados.includes(name)) {
-            let newHabitsArray = habitsSelecionados.filter((item) => item !== name);
-            setHabitsSelecionados([...newHabitsArray]);
+    function habitComplet(id,name) {
+
+        const alreadyDone = todayHabits.find((todayHabit) => todayHabit.id === id).done
+
+        if(alreadyDone){
+
+            const newHabitsArray = habitsSelecionados.filter((item) => item.name !== name && item.id !== id);
+                console.log(newHabitsArray)
+                setHabitsSelecionados(newHabitsArray);
+                console.log(habitsSelecionados)
+            } else {
+                setHabitsSelecionados([...habitsSelecionados, {id, name}]);
+                console.log(habitsSelecionados)
+        }
+/*         if (habitsSelecionados.length > 0) {
+            if (habitsSelecionados.includes(name)) {
+                let newHabitsArray = habitsSelecionados.filter((item) => item !== name);
+                console.log(newHabitsArray)
+                setHabitsSelecionados([...newHabitsArray]);
+                console.log(habitsSelecionados)
+            } else {
+                setHabitsSelecionados([...habitsSelecionados, name]);
+                console.log(habitsSelecionados)
+            }
         } else {
             setHabitsSelecionados([...habitsSelecionados, name]);
         }
 
-        setCompletHabits(!completHabits);
+        setCompletHabits(!completHabits); */
     }
 
     const toggle = (id) => {
@@ -100,40 +156,39 @@ export default function Today(props) {
             : checkHabitt(id);
     };
 
-    function checkHabitt(id){
+    function checkHabitt(id) {
 
         const config = {
             headers: {
                 Authorization: `Bearer ${props.token}`
             }
         }
-        
         const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`
         const promise = axios.post(URL, null, config);
-        promise.then(response =>{
-            const {data} = response;
+        promise.then(response => {
+            const { data } = response;
             loadTodayHabits();
         })
         promise.catch(err => console.log(err.response.statusText))
-    
-}
 
-function uncheckHabitt(id){
-
-    const config = {
-        headers: {
-            Authorization: `Bearer ${props.token}`
-        }
     }
 
-    const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`
+    function uncheckHabitt(id) {
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${props.token}`
+            }
+        }
+
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`
         const promise = axios.post(URL, null, config);
-        promise.then(response =>{
-            const {data} = response;
+        promise.then(response => {
+            const { data } = response;
             loadTodayHabits();
         })
         promise.catch(err => console.log(err.response.statusText))
-}
+    }
 
     const listaHabitos = lisOfHabits();
 
@@ -146,11 +201,11 @@ function uncheckHabitt(id){
             <Main>
                 <DayStyle>{arrayDays[dayjs().day() - 1]}, {dayjs().date()}/{dayjs().month() + 1}</DayStyle>
                 <>
-                {(todayHabits.length > 0 && habitStatus > 0) ? (
-                    <p className="textConclude">
+                    {(todayHabits.length > 0 && habitStatus > 0) ? (
+                        <p className="textConclude">
                             {habitStatus.toFixed()}% dos hábitos concluídos
                         </p>
-                    ) : ( todayHabits.length > 0 && habitStatus  === 0) ? (
+                    ) : (todayHabits.length > 0 && habitStatus === 0) ? (
                         <p className="textNotConclude">
                             Nenhum hábito concluído ainda
                         </p>
@@ -181,6 +236,11 @@ function uncheckHabitt(id){
 
 }
 
+function corHabito(selecionado) {
+    if(selecionado) return "#8FC549";
+    else return "#696969"; 
+}
+
 const ContainerHabits = styled.div`
 display: flex;
 width: 90%;
@@ -195,13 +255,14 @@ button {
     text-decoration: none;
     text-align: center;
     border: none;
+    cursor: pointer;
 }
 
 ion-icon {
     width: 100%;
     height: 100%;
     border-radius: 5px;
-    ${(props) => "color: "+props.style.color};
+    color: ${({selecionado}) => corHabito(selecionado)};
 }
 
 .done {
