@@ -59,7 +59,7 @@ export default function Today(props) {
 
         return todayHabits.map((todayHabit, item) => {
             const selecionado = habitsSelecionados.some(habito => habito.name === todayHabit.name)
-            console.log(selecionado)
+
             return (
                 <ContainerHabits key={item}>
                     <HabitsStyle key={item}>
@@ -91,9 +91,11 @@ export default function Today(props) {
                     onClick={() => {habitComplet(todayHabit.id, todayHabit.name)
                                     toggle(todayHabit.id, todayHabit.name)}}
                     >
-                        <button>
+{/*                         <button>
                                 <ion-icon name="checkbox"></ion-icon>
-                            </button>
+                            </button> */}
+                            <ion-icon name="checkbox"></ion-icon>
+                            
                     </ConcludeStyle>
                     
                 </ContainerHabits>
@@ -126,12 +128,12 @@ export default function Today(props) {
         if(alreadyDone){
 
             const newHabitsArray = habitsSelecionados.filter((item) => item.name !== name && item.id !== id);
-                console.log(newHabitsArray)
+
                 setHabitsSelecionados(newHabitsArray);
-                console.log(habitsSelecionados)
+
             } else {
                 setHabitsSelecionados([...habitsSelecionados, {id, name}]);
-                console.log(habitsSelecionados)
+
         }
 /*         if (habitsSelecionados.length > 0) {
             if (habitsSelecionados.includes(name)) {
@@ -193,7 +195,7 @@ export default function Today(props) {
     const listaHabitos = lisOfHabits();
 
     return (
-        <>
+        <ContainerToday>
             <Header>
                 <h1>TrackIt</h1>
                 <img src={avatar} alt="" />
@@ -231,7 +233,7 @@ export default function Today(props) {
                 </Link>
                 <StyledLink to="/history">Histórico</StyledLink>
             </Footer>
-        </>
+        </ContainerToday>
     )
 
 }
@@ -241,10 +243,18 @@ function corHabito(selecionado) {
     else return "#696969"; 
 }
 
+const ContainerToday = styled.div`
+background-color: #E5E5E5;
+`
+
 const ContainerHabits = styled.div`
 display: flex;
 width: 90%;
+background: #FFFFFF;
+border-radius: 5px;
+height: 94px;
 `
+;
 
 const ConcludeStyle = styled.div`
 
@@ -259,25 +269,27 @@ button {
 }
 
 ion-icon {
-    width: 100%;
-    height: 100%;
+    width: 69px;
+    height: 69px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    cursor: pointer;
     border-radius: 5px;
     color: ${({selecionado}) => corHabito(selecionado)};
 }
-
-.done {
-
-}
 `
+;
 
 const Main = styled.div`
-background-color: #E5E5E5;
-overflow-y: scroll;
+
 display: flex;
 flex-direction: column;
-align-items: center;
+align-items: flex-start;
 justify-content: space-around;
 min-height: 527px;
+margin-left: 17px;
 
 .textNotConclude {
 font-family: 'Lexend Deca';
@@ -285,7 +297,8 @@ font-style: normal;
 font-weight: 400;
 font-size: 17.976px;
 line-height: 22px;
-color: #BABABA;}
+color: #BABABA;
+}
 
 .textConclude{
     font-family: 'Lexend Deca';
@@ -295,6 +308,7 @@ color: #BABABA;}
     line-height: 22px;
     color: #8FC549;
 }
+
 `;
 
 const HabitsStyle = styled.div`
@@ -340,7 +354,6 @@ font-weight: 400;
 font-size: 22.976px;
 line-height: 29px;
 color: #126BA5;
-
 `;
 
 const Header = styled.div`

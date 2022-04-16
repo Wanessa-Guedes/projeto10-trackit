@@ -30,6 +30,7 @@ export default function Habits(props) {
     const [habitsList, setHabitsList] = useState(false);
     const [habitsAdd, setHabitsAdd] = useState([]);
     const [habitLoad, setHabitLoad] = useState(false);
+    const [registerHabits, setRegisterHabits] = useState([]);
 
 
     const percentage = status;
@@ -56,12 +57,11 @@ export default function Habits(props) {
         promise.then(response => {
             const { data } = response;
             setHabitsAdd(data);
+            setRegisterHabits(data.map((habit) => habit.days))
         });
         promise.catch(err => alert('Erro ao carregar os hábitos'));
         promise.finally(() => setHabitLoad(false));
     }
-
-
     // Pegar axios
     function criarHabito() {
         const config = {
@@ -90,7 +90,8 @@ export default function Habits(props) {
     }
 
     function listHabit() {
-        setHabitsList(true)
+        setHabitsList(true);
+        setHabitsAdd([]);
     }
 
     function checkID(id) {
@@ -134,12 +135,24 @@ export default function Habits(props) {
                         <AddHabit>
                             <Input type="text" placeholder="Nome do Hábito" value={habit}
                                 onChange={(e) => setHabit(e.target.value)} />
-                            <div>{weekdays.map((weekday, index) => <div key={index} onClick={() => checkID(weekday.id)}  >{weekday.name[0].toUpperCase()}</div>)}</div>
+                            <div>{weekdays.map((weekday, index) => (<Day key={index}   onClick={() => checkID(weekday.id)} style={ (arrayWeekday.includes(weekday.id))
+                                                ? {
+                                                    color: "#FFFFFF",
+                                                    background: "#CFCFCF",
+                                                    border: "#CFCFCF",
+                                                }
+                                                : {
+                                                    color: "#DBDBDB",
+                                                    background: "#FFFFFF",
+                                                    border: "#D4D4D4",
+                                                }
+                                            }>{weekday.name[0].toUpperCase()}</Day>))}</div>
                             <HabitOptions>
                                 <p onClick={() => addHabit()}>Cancelar</p>
                                 <h3 onClick={() => {
                                     criarHabito()
                                     listHabit()
+                                    setArrayWeekday([])
                                 }}>Salvar</h3>
                             </HabitOptions>
                         </AddHabit>
@@ -149,7 +162,7 @@ export default function Habits(props) {
                     (habitsAdd.length === 0 && habitLoad === false) ? (
                         <NoHabittsYeat> Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</NoHabittsYeat>
                     ) : (habitsAdd.length > 0 && habitLoad === false) ? (
-                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit} arrayWeekday={arrayWeekday}/>
+                        <ListHabits habitsAdd={habitsAdd} func={deleteHabit} arrayWeekday={arrayWeekday} registerHabits={registerHabits}/>
                     ) : (<NoHabittsYeat>Carregando hábitos...</NoHabittsYeat>)
                 }
             </>
@@ -345,3 +358,19 @@ font-size: 17.976px;
 line-height: 22px;
 color: #666666;
 `
+;
+
+const Day = styled.div`
+height: 30px;
+width: 30px;
+${(props) => "color: " + props.style.color};
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+${(props) => "background-color: "+props.style.background};
+${(props) => "border: 1px solid "+props.style.border};
+border-radius: 5px;
+display: flex;
+justify-content: center;
+align-items: center;
+`;

@@ -46,7 +46,7 @@ export default function SignUpPage() {
                 onChange={(e) => setSenha(e.target.value)} />
             <Input type="text" placeholder="Nome" value={user}
                 onChange={(e) => setUser(e.target.value)} />
-            <Input type="text" placeholder="Foto" value={avatar}
+            <Input type="text" placeholder="Foto (URL)" value={avatar}
                 onChange={(e) => setAvatar(e.target.value)} />
             <Button onClick={cadastrar}>Cadastrar</Button>
             <StyledLink to="/">Já tem uma conta? Faça login!</StyledLink>
@@ -63,6 +63,10 @@ justify-content: center;
 align-items: center;
 flex-direction: column;
 background-color: #FFFFFF;
+
+img{
+    width: 50%;
+}
 `;
 
 const StyledLink = styled(Link)`
@@ -77,4 +81,5 @@ line-height: 17px;
 text-align: center;
 text-decoration-line: underline;
 color: #52B6FF;
+margin-top: 25px;
 `;

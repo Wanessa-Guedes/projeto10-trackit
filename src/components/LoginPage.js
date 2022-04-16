@@ -57,6 +57,10 @@ justify-content: center;
 align-items: center;
 flex-direction: column;
 background-color: #FFFFFF;
+
+img{
+    width: 50%;
+}
 `;
 
 const StyledLink = styled(Link)`
@@ -71,4 +75,7 @@ line-height: 17px;
 text-align: center;
 text-decoration-line: underline;
 color: #52B6FF;
+margin-top: 25px;
 `;
+
+

@@ -14,6 +14,8 @@ font-weight: 400;
 font-size: 19.976px;
 line-height: 25px;
 color: #DBDBDB;
+
+margin-bottom: 6px;
 `;
 
 export default Input;

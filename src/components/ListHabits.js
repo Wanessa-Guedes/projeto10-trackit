@@ -25,7 +25,7 @@ export default function ListHabits(props) {
                                 <p>{habitAdd.name}</p>
                                 {
                                 <div>{weekdays.map((weekday, index) => (
-                                            <Day key={index} style={ (props.arrayWeekday.includes(weekday.id))
+                                            <Day key={index} style={ (habitAdd.days.includes(weekday.id))
                                                 ? {
                                                     color: "#FFFFFF",
                                                     background: "#CFCFCF",
